@@ -12,4 +12,4 @@ Technical expertise:
  -> Python
  -> Unix
  
-I've worked on most parts of the Software Development Life Cycle, including requirements gathering, planning, functional design, testing, and deployment. This term's 5510 course, I believe, will provide the requisite exposure to software development tools and techiniques.
+I've worked on most parts of the Software Development Life Cycle, including requirements gathering, planning, functional design, testing, and deployment. This term's 5510 course, I believe, will provide the requisite exposure to software development tools and techniques.
