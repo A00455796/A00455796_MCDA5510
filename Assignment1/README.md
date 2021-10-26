@@ -11,6 +11,6 @@ The assignment's purpose is to go through the directory and check the records in
 Instructions:-
 
 Please configure the following variables in the class Fileprocessor
-	- <path> The path for csv files
-	- <o_path> Desitination path of the output file having valid records along with the <filename>.csv
-	- <logpath> Desitination path of the log file including <logfilename>.txt 
+- <path> The path for csv files
+- <o_path> Desitination path of the output file having valid records along with the <filename>.csv
+- <logpath> Desitination path of the log file including <logfilename>.txt 
