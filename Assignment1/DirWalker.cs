@@ -3,13 +3,15 @@ using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System.Text;
 using System.Diagnostics;
-using System.Threading;
+
 
 namespace MCDA5510_Assignment1
 {
     public class Fileprocessor
     {
         public string path = "C:\\Users\\Admin\\Documents\\Masters-Computing and Data Analytics\\Sep-Dec2021\\Software Dev in Business Env - 5510\\Assignment1\\Sample Data\\";
+        public string logpath = "C:\\Users\\Admin\\Documents\\DirWalker_Logs.txt";
+        public string o_path = "C:\\Users\\Admin\\Documents\\output.csv";
         public int badRecordCount = 0;
         public int recordCount = 0;
         public void processDir(string path)
@@ -34,25 +36,21 @@ namespace MCDA5510_Assignment1
         {
             if (Path.GetExtension(path) != ".csv")
             {
-                Fileprocessor.Logger("The files in this path "+path+" is not .csv extension");
-                //Console.WriteLine("No csv file in the path {0}", path);
+                Fileprocessor.Logger(logpath,"The files in this path "+path+" is not .csv extension");
             }
             else
             {
-                csvParser(path);
-            }
-            
+                csvParser(path, o_path);
+            }   
         }
 
-        public void csvParser(string filepath)
+        public void csvParser(string filepath, string outpath)
         {
-            string o_path = "C:\\Users\\Admin\\Documents\\output.csv";
-            
             bool write = false;
-
             StringBuilder sboutput = new StringBuilder();
             TextFieldParser parser = new TextFieldParser(filepath);
             parser.TextFieldType = FieldType.Delimited;
+            parser.HasFieldsEnclosedInQuotes = true;
             parser.SetDelimiters(",");
             int i = 0;
            
@@ -64,22 +62,13 @@ namespace MCDA5510_Assignment1
                 {
                     foreach (string field in fields)
                     {
-                        if (string.IsNullOrEmpty(field))
+                        if (string.IsNullOrEmpty(field) || fields.Length != 10)
                         {
                             badRecordCount += 1;
-                            //
-                            Fileprocessor.Logger("Error in the file " + filepath + " : Missing record - Any field is Null or Empty");
+                            Fileprocessor.Logger(logpath,"Error in the file " + filepath + " : Missing record - Any field is Null or Empty");
                             write = false;
                             break;
-                        }
-                        if (fields.Length != 10)
-                        {
-                            badRecordCount += 1;
-                            Fileprocessor.Logger("Error in the file " + filepath + " :  The records are imcomplete");
-                            write = false;
-                            break;
-                        }
-                        
+                        }  
                     }
                     recordCount += 1;
                 }
@@ -95,30 +84,29 @@ namespace MCDA5510_Assignment1
                 i++;
             }
 
-            File.AppendAllText(o_path, sboutput.ToString());
+            File.AppendAllText(outpath, sboutput.ToString());
         }
 
-        public static void Logger(string lines)
+        public static void Logger(string logpath, string lines)
         {
-            string path = "C:\\Users\\Admin\\Documents\\DirWalker_Logs.txt";
-            System.IO.StreamWriter file = new System.IO.StreamWriter(path, true);
+            System.IO.StreamWriter file = new System.IO.StreamWriter(logpath, true);
             file.WriteLine(DateTime.Now.ToString() + ": " + lines);
-            file.Close();
-            
+            file.Close(); 
         }
 
         static void Main(string[] args)
         {
-            if (System.IO.File.Exists("C:\\Users\\Admin\\Documents\\DirWalker_Logs.txt"))
+            Fileprocessor fp = new Fileprocessor();
+            if (System.IO.File.Exists(fp.logpath))
             {
-                File.Delete("C:\\Users\\Admin\\Documents\\DirWalker_Logs.txt");
+                File.Delete(fp.logpath);
             }
-            Stopwatch stopwatch = new Stopwatch();
 
+            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             
-            Fileprocessor fp = new Fileprocessor();
-            File.WriteAllText("C:\\Users\\Admin\\Documents\\output.csv", "First Name,Last Name,Street Number,Street,City,Province,Postal Code,Country,Phone Number,email Address\n");
+            
+            File.WriteAllText(fp.o_path, "First Name,Last Name,Street Number,Street,City,Province,Postal Code,Country,Phone Number,email Address\n");
             if (Directory.Exists(fp.path))
             {
                 fp.processDir(fp.path);
@@ -130,10 +118,9 @@ namespace MCDA5510_Assignment1
 
             stopwatch.Stop();
             
-            
-            Logger("Total Number of Missing/Bad Records : "+ fp.badRecordCount.ToString());
-            Logger("Total Number of Valid Records : " + (fp.recordCount - fp.badRecordCount).ToString());
-            Logger("Total Execution Time in ms : " + stopwatch.ElapsedMilliseconds.ToString());
+            Logger(fp.logpath,"Total Number of Missing/Bad Records : "+ fp.badRecordCount.ToString());
+            Logger(fp.logpath,"Total Number of Valid Records : " + (fp.recordCount - fp.badRecordCount).ToString());
+            Logger(fp.logpath,"Total Execution Time in ms : " + stopwatch.ElapsedMilliseconds.ToString());
         }
     }
 }

@@ -5,4 +5,10 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="A00455796_MCDA5510\**" />
+    <EmbeddedResource Remove="A00455796_MCDA5510\**" />
+    <None Remove="A00455796_MCDA5510\**" />
+  </ItemGroup>
+
 </Project>
